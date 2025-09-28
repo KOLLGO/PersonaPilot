@@ -8,6 +8,8 @@ from gen import *
 class PersonaManager:
     def __init__(self, root):
         self.root = root
+        icon = tk.PhotoImage(file="./assets/icon.png")
+        self.root.iconphoto(True, icon)
         self.root.title("Persona Pilot")
         self.root.state('zoomed')
         
@@ -240,52 +242,97 @@ class PersonaManager:
         
         right_column = ttk.Frame(content_frame, style='TFrame')
         right_column.pack(side='right', fill='both', expand=True, padx=(10, 0))
+
+        full_width_frame = ttk.Frame(content_frame, style='TFrame')
+        full_width_frame.pack(side='bottom', fill='x', pady=(20, 0), padx=(10, 0))
         
         # Type variables
         self.fields = {}
         
         if persona_type == "professional":
             field_definitions = [
-                ("Name", "Max Mustermann", left_column),
-                ("Example 1", "Placeholder", left_column),
-                ("Example 2", "Placeholder", right_column),
+                ("Name", "Max Mustermann", left_column, 'normal'),
+                ("Alter", "30", left_column, 'normal'),
+                ("Geschlecht", "Männlich", left_column, 'normal'),
+                ("Geburtsort", "Musterstadt", left_column, 'normal'),
+                ("Wohnort", "Musterstadt", left_column, 'normal'),
+                ("Familienstand", "Verheiratet", left_column, 'normal'),
+                ("Position", "Softwareentwickler", left_column, 'normal'),
+                ("Lebenslauf", "Lebenslauf", right_column, 'wide'),
+                ("Fähigkeiten", "Python, Java, C++", right_column, 'wide'),
+                ("Ziele", "Karrierefortschritt", right_column, 'wide'),
+                ("Persönliche Stärken", "Teamarbeit, Problemlösung", right_column, 'wide'),
+                ("Persönliche Schwächen", "Ungeduld", right_column, 'wide'),
+                ("Softskills", "Kommunikation, Führung", right_column, 'wide'),
+                ("Hobbies", "Lesen, Reisen", right_column, 'wide'),
+                ("Notizen", "Notizen", right_column, 'wide'),
+
             ]
-        else:
+        else: #Personal
             field_definitions = [
-                ("Name", "Max Mustermann", left_column),
-                ("Example 3", "Placeholder", left_column),
-                ("Example 4", "Placeholder", right_column),
+                ("Name", "Max Mustermann", left_column, 'normal'),
+                ("Nutzername", "maxmustermann", left_column, 'normal'),
+                ("Alter", "30", left_column, 'normal'),
+                ("Geschlecht", "Männlich", left_column, 'normal'),
+                ("Geburtsort", "Musterstadt", left_column, 'normal'),
+                ("Wohnort", "Musterstadt", left_column, 'normal'),
+                ("Wohnsituation", "Eigenheim", left_column, 'normal'),
+                ("Familienstand", "Verheiratet", left_column, 'normal'),
+                ("Beruf", "Softwareentwickler", left_column, 'normal'),
+                ("Bildungsstand", "Masterabschluss", left_column, 'normal'),
+                ("Ziele", "Finanzielle Sicherheit", right_column, 'wide'),
+                ("Persönliche Stärken", "Disziplin, Organisation", right_column, 'wide'),
+                ("Persönliche Schwächen", "Perfektionismus", right_column, 'wide'),
+                ("Charaktereigenschaften", "Zuverlässig, Kreativ", right_column, 'wide'),
+                ("Werte", "Ehrlichkeit, Loyalität", right_column, 'wide'),
+                ("Lebensstil", "Aktiv, Sozial", right_column, 'wide'),
+                ("Hobbies", "Lesen, Reisen", right_column, 'wide'),
+                ("Interessen", "Technologie, Musik", right_column, 'wide'),
+                ("Mediennutzung", "Soziale Medien, Podcasts", right_column, 'wide'),
+                ("Konsumverhalten", "Online-Shopping, Qualitätsbewusst", right_column, 'wide'),
+                ("Lebensziele", "Familie gründen, Weltreise", right_column, 'wide'),
+                ("Hintergrundgeschichte", "Hintergrundgeschichte", right_column, 'wide'),
+                ("Notizen", "Notizen", right_column, 'wide'),
             ]
         
-        for field_name, placeholder, column in field_definitions:
-            self.create_field(column, field_name, placeholder)
-        
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
+        for field_name, placeholder, column, width_type in field_definitions:
+            if width_type == 'wide':
+                self.create_field(full_width_frame, field_name, placeholder, width_type)
+            else:
+                self.create_field(column, field_name, placeholder, width_type)
+
+            canvas.pack(side="left", fill="both", expand=True)
+            scrollbar.pack(side="right", fill="y")
         
         # Mouse wheel scrolling
         def _on_mousewheel(event):
             canvas.yview_scroll(int(-1*(event.delta/120)), "units")
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
     
-    def create_field(self, parent, field_name, placeholder):
+    def create_field(self, parent, field_name, placeholder, width_type='normal'):
         field_frame = ttk.LabelFrame(parent, text=field_name, padding=15, style='TLabelframe')
         field_frame.pack(pady=10, fill='x')
         input_container = ttk.Frame(field_frame, style='TFrame')
         input_container.pack(fill='x')
-        entry = ttk.Entry(input_container, font=('Segoe UI', 11), style='TEntry')
-        entry.insert(0, placeholder)
-        entry.pack(side='left', fill='x', expand=True, padx=(0, 10))
+        if width_type == 'wide':
+            entry = tk.Text(input_container, font=('Segoe UI', 11), height=4, wrap='word')
+            entry.insert('1.0', placeholder)
+            entry.pack(side='left', fill='x', expand=True, padx=(0, 10))
+        else:
+            entry = ttk.Entry(input_container, font=('Segoe UI', 11), style='TEntry')
+            entry.insert(0, placeholder)
+            entry.pack(side='left', fill='x', expand=True, padx=(0, 10))
         self.fields[field_name] = {
             'entry': entry,
             'saved_value': '',
-            'is_saved': False
+            'is_saved': False,
+            'width_type': width_type
         }
         button_container = ttk.Frame(input_container, style='TFrame')
         button_container.pack(side='right')
         save_icon = icon_to_image("save", fill="white", scale_to_width=16)
         edit_icon = icon_to_image("pen", fill="white", scale_to_width=16)
-        refresh_icon = icon_to_image("sync", fill="white", scale_to_width=16)
+        refresh_icon = icon_to_image("sync", fill="white", scale_to_width=19)
 
         save_edit_btn = ttk.Button(
             button_container,
@@ -300,13 +347,20 @@ class PersonaManager:
         def toggle_save_edit():
             field_data = self.fields[field_name]
             if field_data['is_saved']:
-                field_data['entry'].configure(state='normal')
+                if width_type == 'wide':
+                    field_data['entry'].configure(state='normal')
+                else:
+                    field_data['entry'].configure(state='normal')
                 save_edit_btn.configure(text="Speichern", image=save_icon)
                 save_edit_btn.image = save_icon
                 field_data['is_saved'] = False
             else:
-                field_data['saved_value'] = field_data['entry'].get()
-                field_data['entry'].configure(state='readonly')
+                if width_type == 'wide':
+                    field_data['saved_value'] = field_data['entry'].get('1.0', 'end-1c')
+                    field_data['entry'].configure(state='disabled')
+                else:
+                    field_data['saved_value'] = field_data['entry'].get()
+                    field_data['entry'].configure(state='readonly')
                 save_edit_btn.configure(text="Bearbeiten", image=edit_icon)
                 save_edit_btn.image = edit_icon
                 field_data['is_saved'] = True
@@ -339,10 +393,13 @@ class PersonaManager:
     def generate_field_value(self, field_name):
         if field_name in self.fields:
             field_data = self.fields[field_name]
-            
+            width_type = field_data.get('width_type', 'normal')
             # Edit Switch
             if field_data['is_saved']:
-                field_data['entry'].configure(state='normal')
+                if width_type == 'wide':
+                    field_data['entry'].configure(state='normal')
+                else:
+                    field_data['entry'].configure(state='normal')
                 field_data['is_saved'] = False
                 for widget in field_data['entry'].master.winfo_children():
                     if isinstance(widget, ttk.Frame):
@@ -351,25 +408,52 @@ class PersonaManager:
                                 btn.configure(text="\U0001F4BE Speichern")
                                 break
             generated_value = self.get_generated_value(field_name)
-            
             # Insert
-            field_data['entry'].delete(0, tk.END)
-            field_data['entry'].insert(0, generated_value)
+            if width_type == 'wide':
+                field_data['entry'].delete('1.0', 'end')
+                field_data['entry'].insert('1.0', generated_value)
+            else:
+                field_data['entry'].delete(0, tk.END)
+                field_data['entry'].insert(0, generated_value)
     
     def get_generated_value(self, field_name):
         # Action Call -> Field Name
         generators = {
             # Professional
-            "Example 1": lambda: professionalEg1(),
-            "Example 2": lambda: professionalEg2(),
-
+            "Position": lambda: professionalPosition(),
+            "Lebenslauf": lambda: professionalCV(),
+            "Fähigkeiten": lambda: professionalSkills(),
+            "Ziele": lambda: professionalGoals(),
+            "Persönliche Stärken": lambda: professionalStrengths(),
+            "Persönliche Schwächen": lambda: professionalWeaknesses(),
+            "Softskills": lambda: professionalSoftskills(),
+            
             # Personal
             
-            "Example 3": lambda: personalEg3(),
-            "Example 4": lambda: personalEg4(),
+            "Nutzername": lambda: personalUsername(),
+            "Wohnsituation": lambda: personalLivingSituation(),
+            "Beruf": lambda: personalOccupation(),
+            "Bildungsstand": lambda: personalEducation(),
+            "Ziele": lambda: personalGoals(),
+            "Persönliche Stärken": lambda: personalStrengths(),
+            "Persönliche Schwächen": lambda: personalWeaknesses(),
+            "Charaktereigenschaften": lambda: personalCharacterTraits(),
+            "Werte": lambda: personalValues(),
+            "Lebensstil": lambda: personalLifestyle(),
+            "Interessen": lambda: personalInterests(),
+            "Mediennutzung": lambda: personalMediaUsage(),
+            "Konsumverhalten": lambda: personalConsumptionBehavior(),
+            "Lebensziele": lambda: personalLifeGoals(),
+            "Hintergrundgeschichte": lambda: personalBackgroundStory(),
 
             # Both
             "Name": lambda: genName(),
+            "Alter": lambda: genAge(),
+            "Geschlecht": lambda: genGender(),
+            "Geburtsort": lambda: genBirthplace(),
+            "Wohnort": lambda: genResidence(),
+            "Familienstand": lambda: genMaritalStatus(),
+            "Hobbies": lambda: genHobbies(),
         }
         
         if field_name in generators:
@@ -396,19 +480,19 @@ class PersonaManager:
             messagebox.showwarning("Keine Daten", 
                                  "Bitte erstellen Sie zuerst eine Persona.")
             return
-        
         # Save All Non-Saved
         for field_name, field_data in self.fields.items():
             if not field_data['is_saved']:
-                field_data['saved_value'] = field_data['entry'].get()
-        
+                if field_data.get('width_type', 'normal') == 'wide':
+                    field_data['saved_value'] = field_data['entry'].get('1.0', 'end-1c')
+                else:
+                    field_data['saved_value'] = field_data['entry'].get()
         # Save Dialog
         file_path = filedialog.asksaveasfilename(
             title="Persona als CSV speichern",
             defaultextension=".csv",
             filetypes=[("CSV-Dateien", "*.csv"), ("Alle Dateien", "*.*")]
         )
-        
         if file_path:
             # write CSV
             import csv
@@ -417,9 +501,12 @@ class PersonaManager:
                 # Header
                 writer.writerow(self.fields.keys())
                 # Werte
-                values = [field_data['entry'].get() for field_data in self.fields.values()]
+                values = [
+                    field_data['saved_value'] if field_data.get('width_type', 'normal') == 'wide'
+                    else field_data['entry'].get()
+                    for field_data in self.fields.values()
+                ]
                 writer.writerow(values)
-            
             messagebox.showinfo("Gespeichert", 
                               f"Persona wurde gespeichert als:\n{os.path.basename(file_path)}")
 
