@@ -503,7 +503,6 @@ class PersonaManager:
                                f"Die Datei konnte nicht geladen werden:\n{str(e)}")
     
     def detect_persona_type(self, data):
-        """Detect persona type based on available fields"""
         professional_fields = {"Position", "Lebenslauf", "Fähigkeiten", "Softskills"}
         personal_fields = {"Nutzername", "Wohnsituation", "Bildungsstand", "Charaktereigenschaften", 
                           "Werte", "Lebensstil", "Interessen", "Mediennutzung", "Konsumverhalten", 
