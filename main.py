@@ -483,16 +483,13 @@ class PersonaManager:
             # Read CSV file
             with open(file_path, 'r', encoding='utf-8') as csvfile:
                 reader = csv.reader(csvfile)
-                headers = next(reader)  # First row: headers
-                values = next(reader)   # Second row: values
+                headers = next(reader)
+                values = next(reader)
                 
-                # Create dictionary from headers and values
                 loaded_data = dict(zip(headers, values))
                 
-                # Determine persona type based on fields
                 persona_type = self.detect_persona_type(loaded_data)
                 
-                # Load persona with data
                 self.open_create_persona(parent, persona_type, loaded_data)
                 
                 messagebox.showinfo("Datei geladen", 
@@ -510,7 +507,6 @@ class PersonaManager:
         
         data_fields = set(data.keys())
         
-        # Check which type has more matching fields
         prof_matches = len(data_fields.intersection(professional_fields))
         pers_matches = len(data_fields.intersection(personal_fields))
         

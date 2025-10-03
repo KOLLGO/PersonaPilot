@@ -1,13 +1,14 @@
-
+import random
 #---------Both---------
+
 def genName():
     return "Max Mustermann"
 
 def genAge():
-    return "30"
+    return random.randint(20, 65)
 
 def genGender():
-    return "Männlich"
+    return random.choice(["Männlich", "Weiblich"])
 
 def genBirthplace():
     return "Berlin"
@@ -16,7 +17,7 @@ def genResidence():
     return "München"
 
 def genMaritalStatus():
-    return "Ledig"
+    return random.choice(["Ledig", "Verheiratet", "Verlobt", "Vergeben"])
 
 def genHobbies():
     return "Lesen, Reisen, Sport"
@@ -44,17 +45,39 @@ def professionalSoftskills():
     return "Kommunikation, Teamarbeit"
 
 #---------Personal---------
-def personalUsername():
-    return "maxmustermann"
+def personalUsername(name):
+    name = name.lower()
+    name = name.replace(" ", ".")
+    if random.choice([True, False]):
+        name = name.replace("a", "4")
+    if random.choice([True, False]):
+        name = name.replace("e", "3")
+    if random.choice([True, False]):
+        name = name.replace("i", "1")
+    if random.choice([True, False]):
+        name = name.replace("o", "0")
+    if random.choice([True, False]):
+        name += str(random.randint(1, 99))
+    if random.choice([True, False]):
+        name = name.replace("u", "v")
+    return name
 
 def personalLivingSituation():
-    return "Wohnsituation-Inhalt"
+    return random.choice(["Allein", "Mit Partner", "Mit Familie", "WG"])
 
 def personalOccupation():
     return "Beruf-Inhalt"
 
-def personalEducation():
-    return "Bildungsweg-Inhalt"
+def personalEducation(age):
+    if age < 21:
+        return random.choice(["Hauptschule", "Realschule", "Ausbildung", "Abitur"])
+    elif age <= 23:
+        return random.choice(["Hauptschule", "Realschule", "Ausbildung", "Abitur", "Bachelor"])
+    elif age <= 30:
+        return random.choice(["Hauptschule", "Realschule", "Ausbildung", "Abitur", "Bachelor", "Master"])
+    else:
+        return random.choice(["Hauptschule", "Realschule", "Ausbildung", "Abitur", "Bachelor", "Master", "Promotion"])
+
 
 def personalGoals():
     return "Persönliche Ziele-Inhalt"
