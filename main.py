@@ -3,6 +3,7 @@ from tkinter import ttk, filedialog, messagebox
 from ttkbootstrap import Style
 from tkfontawesome import icon_to_image 
 import os
+import csv
 from gen import *
 
 class PersonaManager:
@@ -176,7 +177,7 @@ class PersonaManager:
         back_btn.image = arrow_icon
         back_btn.pack(pady=30)
     
-    def open_create_persona(self, parent, persona_type="professional"):
+    def open_create_persona(self, parent, persona_type="professional", loaded_data=None):
         for widget in parent.winfo_children():
             widget.destroy()
         
@@ -296,13 +297,20 @@ class PersonaManager:
             ]
         
         for field_name, placeholder, column, width_type in field_definitions:
+            # Use loaded data if available, otherwise use placeholder
+            initial_value = loaded_data.get(field_name, placeholder) if loaded_data else placeholder
+            
             if width_type == 'wide':
-                self.create_field(full_width_frame, field_name, placeholder, width_type)
+                self.create_field(full_width_frame, field_name, initial_value, width_type)
             else:
-                self.create_field(column, field_name, placeholder, width_type)
+                self.create_field(column, field_name, initial_value, width_type)
 
-            canvas.pack(side="left", fill="both", expand=True)
-            scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+        
+        # Update tab title if name was loaded
+        if loaded_data and "Name" in loaded_data:
+            self.update_tab_title_with_name(loaded_data["Name"])
         
         # Mouse wheel scrolling
         def _on_mousewheel(event):
@@ -462,18 +470,52 @@ class PersonaManager:
             return "N/A"
     
     def open_load_persona(self, parent):
-
         # Select Dialog
         file_path = filedialog.askopenfilename(
             title="Persona CSV laden",
             filetypes=[("CSV-Dateien", "*.csv"), ("Alle Dateien", "*.*")]
         )
         
-        if file_path:
-            messagebox.showinfo("Datei geladen", 
-                              f"Persona wurde geladen aus:\n{os.path.basename(file_path)}")
-            # ToDo: Deserialization logic
-            self.show_persona_type_selection(parent)
+        if not file_path:
+            return
+        
+        try:
+            # Read CSV file
+            with open(file_path, 'r', encoding='utf-8') as csvfile:
+                reader = csv.reader(csvfile)
+                headers = next(reader)  # First row: headers
+                values = next(reader)   # Second row: values
+                
+                # Create dictionary from headers and values
+                loaded_data = dict(zip(headers, values))
+                
+                # Determine persona type based on fields
+                persona_type = self.detect_persona_type(loaded_data)
+                
+                # Load persona with data
+                self.open_create_persona(parent, persona_type, loaded_data)
+                
+                messagebox.showinfo("Datei geladen", 
+                                  f"Persona wurde erfolgreich geladen aus:\n{os.path.basename(file_path)}")
+        
+        except Exception as e:
+            messagebox.showerror("Fehler beim Laden", 
+                               f"Die Datei konnte nicht geladen werden:\n{str(e)}")
+    
+    def detect_persona_type(self, data):
+        """Detect persona type based on available fields"""
+        professional_fields = {"Position", "Lebenslauf", "Fähigkeiten", "Softskills"}
+        personal_fields = {"Nutzername", "Wohnsituation", "Bildungsstand", "Charaktereigenschaften", 
+                          "Werte", "Lebensstil", "Interessen", "Mediennutzung", "Konsumverhalten", 
+                          "Lebensziele", "Hintergrundgeschichte"}
+        
+        data_fields = set(data.keys())
+        
+        # Check which type has more matching fields
+        prof_matches = len(data_fields.intersection(professional_fields))
+        pers_matches = len(data_fields.intersection(personal_fields))
+        
+        return "personal" if pers_matches > prof_matches else "professional"
     
     def save_persona_to_csv(self):
         if not hasattr(self, 'fields') or not self.fields:
@@ -495,15 +537,15 @@ class PersonaManager:
         )
         if file_path:
             # write CSV
-            import csv
             with open(file_path, 'w', newline='', encoding='utf-8') as csvfile:
                 writer = csv.writer(csvfile)
                 # Header
                 writer.writerow(self.fields.keys())
                 # Werte
                 values = [
-                    field_data['saved_value'] if field_data.get('width_type', 'normal') == 'wide'
-                    else field_data['entry'].get()
+                    field_data['saved_value'] if field_data['saved_value']
+                    else (field_data['entry'].get('1.0', 'end-1c') if field_data.get('width_type', 'normal') == 'wide'
+                          else field_data['entry'].get())
                     for field_data in self.fields.values()
                 ]
                 writer.writerow(values)
