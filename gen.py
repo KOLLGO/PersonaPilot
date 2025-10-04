@@ -1,26 +1,48 @@
 import random
+import pandas as pd
+from fetchData import *
 #---------Both---------
 
-def genName():
-    return "Max Mustermann"
+def genName(gender):
+    name =  ""
+    if gender == "Männlich":
+        name = random.choice(names.loc[names['geschlecht'] == 'm', 'vorname'].tolist())
+    else:
+        name = random.choice(names.loc[names['geschlecht'] == 'w', 'vorname'].tolist())
+    name += " " + random.choice(surnames['Name'].tolist())
+    return name
 
 def genAge():
     return random.randint(20, 65)
 
-def genGender():
-    return random.choice(["Männlich", "Weiblich"])
+def genGender(name):
+    if name.split(" ")[0] in names.loc[names['geschlecht'] == 'm', 'vorname'].tolist():
+        return "Männlich"
+    elif name.split(" ")[0] in names.loc[names['geschlecht'] == 'w', 'vorname'].tolist():
+        return "Weiblich"
+    else:
+        return random.choice(["Männlich", "Weiblich"])
 
 def genBirthplace():
-    return "Berlin"
+    return random.choice(cities['stadt'].tolist())
 
 def genResidence():
-    return "München"
+    return random.choice(cities['stadt'].tolist())
 
-def genMaritalStatus():
-    return random.choice(["Ledig", "Verheiratet", "Verlobt", "Vergeben"])
+def genMaritalStatus(age):
+    if age < 25:
+        return random.choice(["Ledig", "Vergeben"])
+    else:
+        return random.choice(["Ledig", "Verheiratet", "Verlobt", "Vergeben"])
 
 def genHobbies():
-    return "Lesen, Reisen, Sport"
+    freetime = ""
+    for i in range(4):
+        hobby = random.choice(hobbies['hobby'].tolist())
+        while hobby in freetime:
+            hobby = random.choice(hobbies['hobby'].tolist())
+        freetime += hobby + ", "
+    return freetime[:-2]
 
 #---------Professional---------
 def professionalPosition():

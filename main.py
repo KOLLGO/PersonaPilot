@@ -339,7 +339,7 @@ class PersonaManager:
         button_container = ttk.Frame(input_container, style='TFrame')
         button_container.pack(side='right')
         save_icon = icon_to_image("save", fill="white", scale_to_width=16)
-        edit_icon = icon_to_image("pen", fill="white", scale_to_width=16)
+        edit_icon = icon_to_image("pen", fill="white", scale_to_width=19)
         refresh_icon = icon_to_image("sync", fill="white", scale_to_width=19)
 
         save_edit_btn = ttk.Button(
@@ -369,7 +369,7 @@ class PersonaManager:
                 else:
                     field_data['saved_value'] = field_data['entry'].get()
                     field_data['entry'].configure(state='readonly')
-                save_edit_btn.configure(text="Bearbeiten", image=edit_icon)
+                save_edit_btn.configure(text="", image=edit_icon)
                 save_edit_btn.image = edit_icon
                 field_data['is_saved'] = True
                 if field_name == "Name":
@@ -455,12 +455,12 @@ class PersonaManager:
             "Hintergrundgeschichte": lambda: personalBackgroundStory(),
 
             # Both
-            "Name": lambda: genName(),
+            "Name": lambda: genName(gender=self.fields.get("Geschlecht", {}).get('entry').get() if self.fields.get("Geschlecht") else "Männlich"),
             "Alter": lambda: genAge(),
-            "Geschlecht": lambda: genGender(),
+            "Geschlecht": lambda: genGender(name = self.fields.get("Name", {}).get('entry').get() if self.fields.get("Name") else "Max Mustermann"),
             "Geburtsort": lambda: genBirthplace(),
             "Wohnort": lambda: genResidence(),
-            "Familienstand": lambda: genMaritalStatus(),
+            "Familienstand": lambda: genMaritalStatus(age=self.fields.get("Alter", {}).get('entry').get() if self.fields.get("Alter") else 30),
             "Hobbies": lambda: genHobbies(),
         }
         
