@@ -9,7 +9,7 @@ def genName(gender):
         name = random.choice(names.loc[names['geschlecht'] == 'm', 'vorname'].tolist())
     else:
         name = random.choice(names.loc[names['geschlecht'] == 'w', 'vorname'].tolist())
-    name += " " + random.choice(surnames['Name'].tolist())
+    name += " " + random.choice(surnames['name'].tolist())
     return name
 
 def genAge():
@@ -30,6 +30,7 @@ def genResidence():
     return random.choice(cities['stadt'].tolist())
 
 def genMaritalStatus(age):
+    age = int(age)
     if age < 25:
         return random.choice(["Ledig", "Vergeben"])
     else:

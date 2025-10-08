@@ -3,6 +3,7 @@ from tkinter import ttk, filedialog, messagebox
 from ttkbootstrap import Style
 from tkfontawesome import icon_to_image 
 import os
+import pyperclip
 import csv
 from gen import *
 
@@ -209,6 +210,17 @@ class PersonaManager:
         save_all_btn.image = save_icon
         save_all_btn.pack(side='left', padx=10)
 
+        clipboard_icon = icon_to_image("clipboard", fill="white", scale_to_width=18)
+        copy_btn = ttk.Button(
+            header_content,
+            text="AI Kontext",
+            image=clipboard_icon,
+            compound="left",
+            command=lambda:self.copy_AI_context(persona_type),
+            style='Modern.TButton',
+        )
+        copy_btn.image = clipboard_icon
+        copy_btn.pack(side='left', padx=10)
         arrow_icon = icon_to_image("arrow-left", fill="white", scale_to_width=18)
         back_btn = ttk.Button(
             header_content,
@@ -438,7 +450,7 @@ class PersonaManager:
             
             # Personal
             
-            "Nutzername": lambda: personalUsername(),
+            "Nutzername": lambda: personalUsername(name=self.fields.get("Name", {}).get('entry').get() if self.fields.get("Name") else "Max Mustermann"),
             "Wohnsituation": lambda: personalLivingSituation(),
             "Beruf": lambda: personalOccupation(),
             "Bildungsstand": lambda: personalEducation(),
@@ -512,6 +524,34 @@ class PersonaManager:
         
         return "personal" if pers_matches > prof_matches else "professional"
     
+    def copy_AI_context(self, persona_type):
+        text = ""
+        if persona_type == "professional":
+            text += "Du bist eine Person im Berufsleben. Passe deinen  Schreibstil und deine Persönlichkeit den folgenden Angaben an und sei dabei so menschlich und natürlich wie möglich. Hier sind die Details der Persona:\n\n"
+            for field in ["Name", "Alter", "Geschlecht", "Geburtsort", "Wohnort", "Familienstand",
+                          "Position", "Lebenslauf", "Fähigkeiten", "Ziele", "Persönliche Stärken",
+                          "Persönliche Schwächen", "Softskills", "Hobbies", "Notizen"]:
+                field_data = self.fields[field]
+                if field_data.get('width_type', 'normal') == 'wide':
+                    value = field_data['entry'].get('1.0', 'end-1c')
+                else:
+                    value = field_data['entry'].get()
+                text += f"{field}: {value}\n"
+        else:  # personal
+            text += "Du bist eine Privatperson. Passe deinen  Schreibstil und deine Persönlichkeit den folgenden Angaben an und sei dabei so menschlich und natürlich wie möglich. Hier sind die Details der Persona:\n\n"
+            for field in ["Name", "Nutzername", "Alter", "Geschlecht", "Geburtsort", "Wohnort",
+                          "Wohnsituation", "Familienstand", "Beruf", "Bildungsstand", "Ziele",
+                          "Persönliche Stärken", "Persönliche Schwächen", "Charaktereigenschaften",
+                          "Werte", "Lebensstil", "Hobbies", "Interessen", "Mediennutzung",
+                          "Konsumverhalten", "Lebensziele", "Hintergrundgeschichte", "Notizen"]:
+                field_data = self.fields[field]
+                if field_data.get('width_type', 'normal') == 'wide':
+                    value = field_data['entry'].get('1.0', 'end-1c')
+                else:
+                    value = field_data['entry'].get()
+                text += f"{field}: {value}\n"
+        pyperclip.copy(text)
+            
     def save_persona_to_csv(self):
         if not hasattr(self, 'fields') or not self.fields:
             messagebox.showwarning("Keine Daten", 

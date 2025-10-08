@@ -2,3 +2,4 @@ tkinter
 ttkbootstrap
 tkfontawesome
 csv
+pyperclip
