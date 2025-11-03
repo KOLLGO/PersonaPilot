@@ -1,33 +1,43 @@
 import random
 import pandas as pd
 from fetchData import *
-#---------Both---------
 
+
+# ---------Both---------
 def genName(gender):
-    name =  ""
+    # generate random name based on gender, gender will never be empty (pre-filled), possible fail: custom input
+    name = ""
     if gender == "Männlich":
-        name = random.choice(names.loc[names['geschlecht'] == 'm', 'vorname'].tolist())
+        name = random.choice(names.loc[names["geschlecht"] == "m", "vorname"].tolist())
     else:
-        name = random.choice(names.loc[names['geschlecht'] == 'w', 'vorname'].tolist())
-    name += " " + random.choice(surnames['name'].tolist())
+        name = random.choice(names.loc[names["geschlecht"] == "w", "vorname"].tolist())
+    name += " " + random.choice(surnames["name"].tolist())
     return name
+
 
 def genAge():
     return random.randint(20, 65)
 
+
 def genGender(name):
-    if name.split(" ")[0] in names.loc[names['geschlecht'] == 'm', 'vorname'].tolist():
+    # gender basesed on name
+    if name.split(" ")[0] in names.loc[names["geschlecht"] == "m", "vorname"].tolist():
         return "Männlich"
-    elif name.split(" ")[0] in names.loc[names['geschlecht'] == 'w', 'vorname'].tolist():
+    elif (
+        name.split(" ")[0] in names.loc[names["geschlecht"] == "w", "vorname"].tolist()
+    ):
         return "Weiblich"
-    else:
+    else:  # custom name not in dataset
         return random.choice(["Männlich", "Weiblich"])
 
+
 def genBirthplace():
-    return random.choice(cities['stadt'].tolist())
+    return random.choice(cities["stadt"].tolist())
+
 
 def genResidence():
-    return random.choice(cities['stadt'].tolist())
+    return random.choice(cities["stadt"].tolist())
+
 
 def genMaritalStatus(age):
     age = int(age)
@@ -36,41 +46,53 @@ def genMaritalStatus(age):
     else:
         return random.choice(["Ledig", "Verheiratet", "Verlobt", "Vergeben"])
 
+
 def genHobbies():
     freetime = ""
-    for i in range(4):
-        hobby = random.choice(hobbies['hobby'].tolist())
+    for i in range(4):  # select 4 hobbies
+        hobby = random.choice(hobbies["hobby"].tolist())
         while hobby in freetime:
-            hobby = random.choice(hobbies['hobby'].tolist())
+            hobby = random.choice(hobbies["hobby"].tolist())
         freetime += hobby + ", "
-    return freetime[:-2]
+    return freetime[:-2]  # remove last , +  space
 
-#---------Professional---------
-def professionalPosition():
-    return "Softwareentwickler"
 
+def genJob(threshold):
+    return random.choice(
+        jobs[jobs["digitalaffinitaet"] <= threshold]["jobtitel"].tolist()
+    )  # get random job based on digital affinity threshold
+
+
+# ---------Professional---------
 def professionalCV():
     return "Lebenslauf-Inhalt"
+
 
 def professionalSkills():
     return "Programmierkenntnisse, Projektmanagement"
 
+
 def professionalGoals():
     return "Karriereziele-Inhalt"
+
 
 def professionalStrengths():
     return "Stärken-Inhalt"
 
+
 def professionalWeaknesses():
     return "Schwächen-Inhalt"
+
 
 def professionalSoftskills():
     return "Kommunikation, Teamarbeit"
 
-#---------Personal---------
+
+# ---------Personal---------
 def personalUsername(name):
-    name = name.lower()
-    name = name.replace(" ", ".")
+    name = name.lower()  # lowercase
+    name = name.replace(" ", ".")  # no spaces
+    # sometimes replace, sometimes not
     if random.choice([True, False]):
         name = name.replace("a", "4")
     if random.choice([True, False]):
@@ -85,52 +107,82 @@ def personalUsername(name):
         name = name.replace("u", "v")
     return name
 
+
 def personalLivingSituation():
-    return random.choice(["Allein", "Mit Partner", "Mit Familie", "WG"])
+    return random.choice(
+        ["Allein", "Mit Partner", "Mit Familie", "WG"]
+    )  # random living situation
+
 
 def personalOccupation():
     return "Beruf-Inhalt"
 
+
 def personalEducation(age):
+    # select education based on age possibilities
     if age < 21:
         return random.choice(["Hauptschule", "Realschule", "Ausbildung", "Abitur"])
     elif age <= 23:
-        return random.choice(["Hauptschule", "Realschule", "Ausbildung", "Abitur", "Bachelor"])
+        return random.choice(
+            ["Hauptschule", "Realschule", "Ausbildung", "Abitur", "Bachelor"]
+        )
     elif age <= 30:
-        return random.choice(["Hauptschule", "Realschule", "Ausbildung", "Abitur", "Bachelor", "Master"])
+        return random.choice(
+            ["Hauptschule", "Realschule", "Ausbildung", "Abitur", "Bachelor", "Master"]
+        )
     else:
-        return random.choice(["Hauptschule", "Realschule", "Ausbildung", "Abitur", "Bachelor", "Master", "Promotion"])
+        return random.choice(
+            [
+                "Hauptschule",
+                "Realschule",
+                "Ausbildung",
+                "Abitur",
+                "Bachelor",
+                "Master",
+                "Promotion",
+            ]
+        )
 
 
 def personalGoals():
     return "Persönliche Ziele-Inhalt"
 
+
 def personalStrengths():
     return "Persönliche Stärken-Inhalt"
+
 
 def personalWeaknesses():
     return "Persönliche Schwächen-Inhalt"
 
+
 def personalCharacterTraits():
     return "Charaktereigenschaften-Inhalt"
+
 
 def personalValues():
     return "Werte-Inhalt"
 
+
 def personalLifestyle():
     return "Lebensstil-Inhalt"
+
 
 def personalInterests():
     return "Interessen-Inhalt"
 
+
 def personalMediaUsage():
     return "Mediennutzungsverhalten-Inhalt"
+
 
 def personalConsumptionBehavior():
     return "Konsumverhalten-Inhalt"
 
+
 def personalLifeGoals():
     return "Lebensziele-Inhalt"
+
 
 def personalBackgroundStory():
     return "Hintergrundgeschichte-Inhalt"
