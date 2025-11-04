@@ -1,5 +1,4 @@
-tkinter
 ttkbootstrap
 tkfontawesome
-csv
 pyperclip
+pandas
