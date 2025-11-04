@@ -60,7 +60,7 @@ python main.py
 
 ### 2.2. UI und Controls
 
-Home Bild
+![](https://github.com/KOLLGO/PersonaPilot/blob/main/assets/home.png)
 
 1. Tab Selection
    
@@ -68,17 +68,17 @@ Home Bild
    
    - schließen mit mittlerer Maustaste (`MMB`)
 
-2. Persona Selection
+2. Persona Creation
    
    - Persona erstellen: neue Persona
    
    - Persona laden: vorhandene Persona aus CSV-Datei laden (Typ automatisch erkannt)
 
-Bild Types
+![](https://github.com/KOLLGO/PersonaPilot/blob/main/assets/types.png)
 
 3. Wahl zwischen den Persona-Typen
 
-Bild Persona
+![](https://github.com/KOLLGO/PersonaPilot/blob/main/assets/persona.png)
 
 4. Speichert die Persona als CSV, die später wieder vom Programm geöffnet werden kann
 
