@@ -16,6 +16,10 @@ Die Software kann als reines Formular verwendet werden, sofern dem User selbst g
 
 Falls nicht, sind Generatoren implementiert, welche die jeweilige Eigenschaft basierend auf anderen Parametern der Persona sinnvoll ausfüllen.
 
+
+
+Auswahl von MBTI für die Persönlichkeitstypen: beschreibt alle wesentlichen Persönlichkeitstypen sehr treffend mit wenigen Parametern, für Weiterverarbeitung mit KI oder zum selbst nachlesen gut geeignet
+
 ## 2. Software
 
 ### 2.1. Aufbau und Installation
@@ -139,6 +143,8 @@ python main.py
     - Zufallsgeneratoren mit den vorhandenen Datensätzen
     
     - API eines KI-Services (besonders für Lebenslauf)
+    
+    - weniger oder keine Parameter verwenden
     
     - Generator-Felder für nicht implementierte entfernen
 
