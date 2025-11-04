@@ -114,10 +114,6 @@ def personalLivingSituation():
     )  # random living situation
 
 
-def personalOccupation():
-    return "Beruf-Inhalt"
-
-
 def personalEducation(age):
     # select education based on age possibilities
     if age < 21:
